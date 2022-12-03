@@ -2,7 +2,7 @@ macro_rules! path {
     ($day:expr, $type:expr) => {
         std::path::Path::new(concat!(
             "tests/input/day",
-            $day,
+            stringify!($day),
             "/",
             $type,
             ".txt"
@@ -10,37 +10,47 @@ macro_rules! path {
     };
 }
 
-macro_rules! example {
-    ($day:expr) => {
+macro_rules! path_to_example {
+    ($day:ident) => {
         path!($day, "example")
     };
 }
 
-macro_rules! input {
-    ($day:expr) => {
+macro_rules! path_to_input {
+    ($day:ident) => {
         path!($day, "input")
     };
 }
 
-#[test]
-fn day_01() {
-    let example = aoc2022::Day01::new(example!("01")).unwrap();
-    let input = aoc2022::Day01::new(input!("01")).unwrap();
+macro_rules! day {
+  ($n:ident, $p1_ex:expr, $p1_in:expr, $p2_ex:expr, $p2_in:expr) => {
+       paste::paste! {
+            #[test]
+            fn [<day $n _part_1 _example>]() {
+                let data = aoc2022::[<day $n>]::Data::load(path_to_example!($n)).unwrap();
+                assert_eq!($p1_ex, data.part1().unwrap());
+            }
 
-    assert_eq!(24000, example.part1().unwrap());
-    assert_eq!(70374, input.part1().unwrap());
-    assert_eq!(45000, example.part2().unwrap());
-    assert_eq!(204610, input.part2().unwrap());
+            #[test]
+            fn [<day $n _part_1 _input>]() {
+                let data = aoc2022::[<day $n>]::Data::load(path_to_input!($n)).unwrap();
+                assert_eq!($p1_in, data.part1().unwrap());
+            }
+
+            #[test]
+            fn [<day $n _part_2 _example>]() {
+                let data = aoc2022::[<day $n>]::Data::load(path_to_example!($n)).unwrap();
+                assert_eq!($p2_ex, data.part2().unwrap());
+            }
+
+            #[test]
+            fn [<day $n _part_2 _input>]() {
+                let data = aoc2022::[<day $n>]::Data::load(path_to_input!($n)).unwrap();
+                assert_eq!($p2_in, data.part2().unwrap());
+            }
+       }
+  };
 }
 
-#[test]
-fn day_02() {
-    let example = aoc2022::day_02::Day02::load(example!("02")).unwrap();
-    let input = aoc2022::day_02::Day02::load(input!("02")).unwrap();
-
-    assert_eq!(15, example.part1());
-    assert_eq!(8890, input.part1());
-
-    assert_eq!(12, example.part2());
-    assert_eq!(10238, input.part2());
-}
+day!(_01, 24000, 70374, 45000, 204610);
+day!(_02, 15, 8890, 12, 10238);
