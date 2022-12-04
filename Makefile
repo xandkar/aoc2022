@@ -1,3 +1,7 @@
+.PHONY: all
+all: check
+	$(MAKE) --no-print-directory test
+
 .PHONY: test
 test:
 	# Single thread only so that the results are reported in expected order,
