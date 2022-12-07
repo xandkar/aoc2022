@@ -21,6 +21,10 @@ impl Data {
     }
 }
 
+// Perry suggests a much more efficient way:
+// > set a different bit in a 32 bit word for every lower case letter, or them
+// > together and use popcount (which is a single instruction on most
+// > processors and there's a compiler intrinsic)
 fn marker(s: &str, l: usize) -> Option<usize> {
     for (i, _) in s.chars().enumerate() {
         let n = i + l;
