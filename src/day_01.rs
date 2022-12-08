@@ -31,14 +31,14 @@ impl Data {
         })
     }
 
-    pub fn part1(&self) -> Result<u64> {
+    pub fn solve1(&self) -> Result<u64> {
         match self.rev_sorted_totals[..] {
             [] => Err(anyhow::anyhow!("zero elves in data")),
             [highest, ..] => Ok(highest),
         }
     }
 
-    pub fn part2(&self) -> Result<u64> {
+    pub fn solve2(&self) -> Result<u64> {
         match self.rev_sorted_totals[..] {
             [t1, t2, t3, ..] => Ok(t1 + t2 + t3),
             _ => Err(anyhow::anyhow!("less than 3 elves in data")),

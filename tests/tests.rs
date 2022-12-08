@@ -28,25 +28,25 @@ macro_rules! day {
             #[test]
             fn [<day $n _part_1 _example>]() {
                 let data = aoc2022::[<day $n>]::Data::load(path_to_example!($n)).unwrap();
-                assert_eq!($p1_ex, data.part1().unwrap());
+                assert_eq!($p1_ex, data.solve1().unwrap());
             }
 
             #[test]
             fn [<day $n _part_1 _input>]() {
                 let data = aoc2022::[<day $n>]::Data::load(path_to_input!($n)).unwrap();
-                assert_eq!($p1_in, data.part1().unwrap());
+                assert_eq!($p1_in, data.solve1().unwrap());
             }
 
             #[test]
             fn [<day $n _part_2 _example>]() {
                 let data = aoc2022::[<day $n>]::Data::load(path_to_example!($n)).unwrap();
-                assert_eq!($p2_ex, data.part2().unwrap());
+                assert_eq!($p2_ex, data.solve2().unwrap());
             }
 
             #[test]
             fn [<day $n _part_2 _input>]() {
                 let data = aoc2022::[<day $n>]::Data::load(path_to_input!($n)).unwrap();
-                assert_eq!($p2_in, data.part2().unwrap());
+                assert_eq!($p2_in, data.solve2().unwrap());
             }
        }
   };

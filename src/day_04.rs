@@ -57,7 +57,7 @@ impl Data {
         Ok(Self { range_pairs })
     }
 
-    pub fn part1(&self) -> Result<usize> {
+    pub fn solve1(&self) -> Result<usize> {
         let count = self
             .range_pairs
             .iter()
@@ -69,7 +69,7 @@ impl Data {
         Ok(count)
     }
 
-    pub fn part2(&self) -> Result<usize> {
+    pub fn solve2(&self) -> Result<usize> {
         let count = self
             .range_pairs
             .iter()

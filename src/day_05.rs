@@ -95,7 +95,7 @@ impl Data {
         })
     }
 
-    pub fn part1(&self) -> Result<String> {
+    pub fn solve1(&self) -> Result<String> {
         let mut stacks = self.stacks.clone();
         for Ix::Mv { quant, src, dst } in self.instructions.iter() {
             for _ in 0..*quant {
@@ -107,7 +107,7 @@ impl Data {
         Ok(Self::msg(stacks))
     }
 
-    pub fn part2(&self) -> Result<String> {
+    pub fn solve2(&self) -> Result<String> {
         let mut stacks = self.stacks.clone();
         for Ix::Mv { quant, src, dst } in self.instructions.iter() {
             let len = stacks[*src].len();

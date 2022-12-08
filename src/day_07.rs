@@ -65,7 +65,7 @@ impl Data {
         Ok(Self { commands })
     }
 
-    pub fn part1(&self) -> Result<u64> {
+    pub fn solve1(&self) -> Result<u64> {
         let sum = self
             .dir_sizes()
             .iter()
@@ -75,7 +75,7 @@ impl Data {
         Ok(sum)
     }
 
-    pub fn part2(&self) -> Result<Option<u64>> {
+    pub fn solve2(&self) -> Result<Option<u64>> {
         let total = 70000000;
         let need = 30000000;
         let sizes = self.dir_sizes();

@@ -52,7 +52,7 @@ impl Data {
         Ok(Self { sacks })
     }
 
-    pub fn part1(&self) -> Result<u64> {
+    pub fn solve1(&self) -> Result<u64> {
         let mut total = 0;
         for Sack {
             compartment_1: c1,
@@ -75,7 +75,7 @@ impl Data {
         Ok(total as u64)
     }
 
-    pub fn part2(&self) -> Result<u64> {
+    pub fn solve2(&self) -> Result<u64> {
         let mut groups = Vec::new();
         let mut group_buf = Vec::new();
         let mut i = 1;

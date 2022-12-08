@@ -12,11 +12,11 @@ impl Data {
         Ok(Self { signal })
     }
 
-    pub fn part1(&self) -> Result<usize> {
+    pub fn solve1(&self) -> Result<usize> {
         marker(&self.signal, 4).ok_or_else(|| anyhow!("no solution found"))
     }
 
-    pub fn part2(&self) -> Result<usize> {
+    pub fn solve2(&self) -> Result<usize> {
         marker(&self.signal, 14).ok_or_else(|| anyhow!("no solution found"))
     }
 }

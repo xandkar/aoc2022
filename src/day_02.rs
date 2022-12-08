@@ -135,7 +135,7 @@ impl Data {
         Ok(Self { games })
     }
 
-    pub fn part1(&self) -> Result<u64> {
+    pub fn solve1(&self) -> Result<u64> {
         Ok(self
             .games
             .iter()
@@ -149,7 +149,7 @@ impl Data {
             .sum())
     }
 
-    pub fn part2(&self) -> Result<u64> {
+    pub fn solve2(&self) -> Result<u64> {
         Ok(self
             .games
             .iter()
