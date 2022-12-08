@@ -79,7 +79,9 @@ impl Data {
         let total = 70000000;
         let need = 30000000;
         let sizes = self.dir_sizes();
-        let used = sizes.get(&vec!["/".to_string()]).unwrap();
+        let used = sizes
+            .get(&vec!["/".to_string()])
+            .ok_or_else(|| anyhow!("missing root directory in data"))?;
         let available = total - used;
         if need > available {
             let missing = need - available;
