@@ -60,3 +60,10 @@ day!(_05, "CMZ", "GRTSWNJHH", "MCD", "QLFQDBBHM");
 day!(_06, 7, 1804, 19, 2508);
 day!(_07, 95437, 1391690, Some(24933642), Some(5469168));
 day!(_08, 21, 1713, 8, 268464);
+day!(
+    _10,
+    13140,
+    17380,
+    std::fs::read_to_string("tests/output/day_10/example.txt").unwrap(),
+    std::fs::read_to_string("tests/output/day_10/input.txt").unwrap()
+);
