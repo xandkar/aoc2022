@@ -36,37 +36,16 @@ impl Data {
         let rn = nrows - 1;
         let kn = ncols - 1;
         let mut v = vec![vec![true; ncols]; nrows];
-
         for r0 in 1..rn {
             for k0 in 1..kn {
-                let mut up = true;
-                let mut down = true;
-                let mut left = true;
-                let mut right = true;
-                for (ri, ki) in (0..r0).rev().map(|ri| (ri, k0)) {
-                    if g[ri][ki] >= g[r0][k0] {
-                        up = false;
-                    }
-                }
-                for (ri, ki) in (r0 + 1..nrows).map(|ri| (ri, k0)) {
-                    if g[ri][ki] >= g[r0][k0] {
-                        down = false;
-                    }
-                }
-                for (ri, ki) in (0..k0).rev().map(|ki| (r0, ki)) {
-                    if g[ri][ki] >= g[r0][k0] {
-                        left = false;
-                    }
-                }
-                for (ri, ki) in (k0 + 1..ncols).map(|ki| (r0, ki)) {
-                    if g[ri][ki] >= g[r0][k0] {
-                        right = false;
-                    }
-                }
+                let o = (r0, k0);
+                let up = is_visible(g, o, view_up(o));
+                let down = is_visible(g, o, view_down(o, nrows));
+                let left = is_visible(g, o, view_left(o));
+                let right = is_visible(g, o, view_right(o, ncols));
                 v[r0][k0] = up || down || left || right;
             }
         }
-
         let visible: u64 = v
             .iter()
             .map(|row| row.iter().filter(|is_vis| **is_vis).count() as u64)
@@ -76,55 +55,18 @@ impl Data {
 
     pub fn solve2(&self) -> Result<u64> {
         let g = &self.grid;
-        let nrows = g.len();
-        let ncols = g[0].len();
-        let rn = nrows - 1;
-        let kn = ncols - 1;
-        let mut score: Vec<Vec<u64>> = vec![vec![0; ncols]; nrows];
+        let rn = g.len();
+        let kn = g[0].len();
+        let mut score: Vec<Vec<u64>> = vec![vec![0; kn]; rn];
 
-        for r0 in 1..rn {
-            for k0 in 1..kn {
-                let mut up = 0;
-                let mut down = 0;
-                let mut left = 0;
-                let mut right = 0;
-                (0..r0).rev().map(|ri| (ri, k0)).fold(
-                    false,
-                    |blocked, (ri, ki)| {
-                        if !blocked {
-                            up += 1;
-                        };
-                        g[ri][ki] >= g[r0][k0] || blocked
-                    },
-                );
-                (r0 + 1..nrows).map(|ri| (ri, k0)).fold(
-                    false,
-                    |blocked, (ri, ki)| {
-                        if !blocked {
-                            down += 1;
-                        };
-                        g[ri][ki] >= g[r0][k0] || blocked
-                    },
-                );
-                (0..k0).rev().map(|ki| (r0, ki)).fold(
-                    false,
-                    |blocked, (ri, ki)| {
-                        if !blocked {
-                            left += 1;
-                        };
-                        g[ri][ki] >= g[r0][k0] || blocked
-                    },
-                );
-                (k0 + 1..ncols).map(|ki| (r0, ki)).fold(
-                    false,
-                    |blocked, (ri, ki)| {
-                        if !blocked {
-                            right += 1;
-                        };
-                        g[ri][ki] >= g[r0][k0] || blocked
-                    },
-                );
-                score[r0][k0] = up * down * left * right;
+        for r0 in 1..rn - 1 {
+            for k0 in 1..kn - 1 {
+                let o = (r0, k0);
+                let u = count_visible(g, o, view_up(o));
+                let d = count_visible(g, o, view_down(o, rn));
+                let l = count_visible(g, o, view_left(o));
+                let r = count_visible(g, o, view_right(o, kn));
+                score[r0][k0] = u * d * l * r;
             }
         }
 
@@ -135,4 +77,46 @@ impl Data {
             .unwrap_or_else(|| unreachable!());
         Ok(*highest)
     }
+}
+
+type Point = (usize, usize);
+
+fn view_up((r0, k0): Point) -> impl Iterator<Item = Point> {
+    (0..r0).rev().map(move |ri| (ri, k0))
+}
+
+fn view_down((r0, k0): Point, nrows: usize) -> impl Iterator<Item = Point> {
+    (r0 + 1..nrows).map(move |ri| (ri, k0))
+}
+
+fn view_left((r0, k0): Point) -> impl Iterator<Item = Point> {
+    (0..k0).rev().map(move |ki| (r0, ki))
+}
+
+fn view_right((r0, k0): Point, ncols: usize) -> impl Iterator<Item = Point> {
+    (k0 + 1..ncols).map(move |ki| (r0, ki))
+}
+
+fn count_visible<View: Iterator<Item = Point>>(
+    data: &[Vec<u8>],
+    origin: Point,
+    view: View,
+) -> u64 {
+    let (r0, k0) = origin;
+    let mut counter = 0;
+    view.fold(false, |is_already_blocked, (ri, ki)| {
+        if !is_already_blocked {
+            counter += 1;
+        };
+        data[ri][ki] >= data[r0][k0] || is_already_blocked
+    });
+    counter
+}
+
+fn is_visible<View: Iterator<Item = Point>>(
+    data: &[Vec<u8>],
+    (r, k): Point,
+    view: View,
+) -> bool {
+    view.filter(|(ri, ki)| data[*ri][*ki] >= data[r][k]).count() == 0
 }
