@@ -36,6 +36,7 @@ impl Data {
         let rn = nrows - 1;
         let kn = ncols - 1;
         let mut v = vec![vec![true; ncols]; nrows];
+        #[allow(clippy::needless_range_loop)]
         for r0 in 1..rn {
             for k0 in 1..kn {
                 let o = (r0, k0);
@@ -59,6 +60,7 @@ impl Data {
         let kn = g[0].len();
         let mut score: Vec<Vec<u64>> = vec![vec![0; kn]; rn];
 
+        #[allow(clippy::needless_range_loop)]
         for r0 in 1..rn - 1 {
             for k0 in 1..kn - 1 {
                 let o = (r0, k0);
