@@ -74,3 +74,4 @@ day!(
     std::fs::read_to_string("tests/output/day_10/example.txt").unwrap(),
     std::fs::read_to_string("tests/output/day_10/input.txt").unwrap()
 );
+day!(_11, 10605, 100345, 2713310158, 28537348205);
