@@ -1,7 +1,5 @@
-use std::cmp::max;
 use std::collections::HashSet;
 use std::io::BufRead;
-use std::str::FromStr;
 
 use anyhow::{anyhow, Result};
 
@@ -13,7 +11,7 @@ enum Dir {
     U,
 }
 
-impl FromStr for Dir {
+impl std::str::FromStr for Dir {
     type Err = anyhow::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
@@ -57,51 +55,70 @@ impl Data {
     }
 
     pub fn solve1(&self) -> Result<usize> {
-        let mut visited: HashSet<(i32, i32)> = HashSet::new();
-        let mut head: (i32, i32) = (4, 0);
-        let mut tail: (i32, i32) = head;
-        visited.insert(tail);
-        self.moves.iter().for_each(|m| {
-            mv(m).for_each(|(rd, kd)| {
-                head = (head.0 + rd, head.1 + kd);
-                if distance(head, tail) > 1 {
-                    tail = behind(head, m.0);
-                }
-                visited.insert(tail);
-            });
-        });
-        Ok(visited.len())
+        Ok(solve(&self.moves, 2))
     }
 
     pub fn solve2(&self) -> Result<usize> {
-        todo!();
+        Ok(solve(&self.moves, 10))
     }
 }
 
-type Point = (i32, i32);
+fn solve(moves: &[Mv], n: usize) -> usize {
+    let mut visited: HashSet<(i32, i32)> = HashSet::new();
+    let mut knot_pos = vec![(4, 0); n];
+    let head = 0;
+    let tail = n - 1;
+    visited.insert(knot_pos[tail]);
+    for d in deltas(moves) {
+        // head
+        knot_pos[head] = add(knot_pos[head], d);
 
-fn distance(p1: Point, p2: Point) -> u32 {
+        // tail
+        for current in 1..n {
+            let ahead = current - 1;
+            knot_pos[current] = catchup(knot_pos[current], knot_pos[ahead]);
+            visited.insert(knot_pos[tail]);
+        }
+    }
+    visited.len()
+}
+
+type Pos = (i32, i32);
+
+fn catchup(current: Pos, ahead: Pos) -> Pos {
+    match distance(ahead, current) {
+        0 | 1 => current,
+        _ => add(current, sig(sub(ahead, current))),
+    }
+}
+
+fn add((r1, k1): Pos, (r2, k2): Pos) -> Pos {
+    ((r1 + r2), (k1 + k2))
+}
+
+fn sub((r1, k1): Pos, (r2, k2): Pos) -> Pos {
+    ((r1 - r2), (k1 - k2))
+}
+
+fn sig((r, k): Pos) -> Pos {
+    (r.signum(), k.signum())
+}
+
+fn distance(p1: Pos, p2: Pos) -> u32 {
     let (r1, k1) = p1;
     let (r2, k2) = p2;
     let rd = r1.abs_diff(r2);
     let kd = k1.abs_diff(k2);
-    max(rd, kd)
+    std::cmp::max(rd, kd)
 }
 
-fn behind((r, k): Point, facing: Dir) -> Point {
-    match facing {
-        Dir::R => (r, k - 1),
-        Dir::L => (r, k + 1),
-        Dir::D => (r - 1, k),
-        Dir::U => (r + 1, k),
-    }
-}
-
-fn mv((dir, delta): &Mv) -> impl Iterator<Item = Point> + '_ {
-    (0..(*delta)).map(move |_| match dir {
-        Dir::R => (0, 1),
-        Dir::L => (0, -1),
-        Dir::D => (1, 0),
-        Dir::U => (-1, 0),
+fn deltas(moves: &[Mv]) -> impl Iterator<Item = Pos> + '_ {
+    moves.iter().flat_map(|(dir, delta): &Mv| {
+        (0..(*delta)).map(move |_| match dir {
+            Dir::R => (0, 1),
+            Dir::L => (0, -1),
+            Dir::D => (1, 0),
+            Dir::U => (-1, 0),
+        })
     })
 }
