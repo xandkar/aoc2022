@@ -13,3 +13,11 @@ check:
 	cargo check
 	cargo clippy
 	cargo fmt --check
+
+day_%:
+	mkdir -p tests/input/$@
+	touch tests/input/$@/input.txt
+	touch tests/input/$@/example.txt
+	cp day_x.rs src/$@.rs
+	echo "day!(_$*, 0, 0, 0, 0);" >> tests/tests.rs
+	echo "pub mod day_$*;" >> src/lib.rs
